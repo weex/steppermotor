@@ -17,9 +17,9 @@ GPIO.setup(coil_A_2_pin, GPIO.OUT)
 GPIO.setup(coil_B_1_pin, GPIO.OUT)
 GPIO.setup(coil_B_2_pin, GPIO.OUT)
 
-GPIO.output(enable_pin, 1)
 
 def forward(delay, steps):
+  GPIO.output(enable_pin, 1)
   for i in range(0, steps):
     setStep(1, 0, 1, 0)
     time.sleep(delay)
@@ -29,8 +29,10 @@ def forward(delay, steps):
     time.sleep(delay)
     setStep(1, 0, 0, 1)
     time.sleep(delay)
-    
+  GPIO.output(enable_pin, 0)
+
 def backwards(delay, steps):
+  GPIO.output(enable_pin, 1)
   for i in range(0, steps):
     setStep(1, 0, 0, 1)
     time.sleep(delay)
@@ -40,6 +42,7 @@ def backwards(delay, steps):
     time.sleep(delay)
     setStep(1, 0, 1, 0)
     time.sleep(delay)
+  GPIO.output(enable_pin, 0)
 
 def setStep(w1, w2, w3, w4):
   GPIO.output(coil_A_1_pin, w1)
@@ -49,11 +52,12 @@ def setStep(w1, w2, w3, w4):
 
 delay = sys.argv[1]
 steps = sys.argv[2]
-direction = sys.argv[3]
 
-if direction == 'f':
-   forward(int(delay) / 1000.0, int(steps))
-elif direction == 'b':
-   backwards(int(delay) / 1000.0, int(steps))
+backwards(int(delay) / 1000.0, int(steps)/2)
 
-GPIO.output(enable_pin, 0)
+while 1:
+    forward(int(delay) / 1000.0, int(steps))
+    time.sleep(14)
+    backwards(int(delay) / 1000.0, int(steps))
+    time.sleep(14)
+

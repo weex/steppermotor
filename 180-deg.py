@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import sys
+import random
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -17,7 +18,6 @@ GPIO.setup(coil_A_2_pin, GPIO.OUT)
 GPIO.setup(coil_B_1_pin, GPIO.OUT)
 GPIO.setup(coil_B_2_pin, GPIO.OUT)
 
-GPIO.output(enable_pin, 1)
 
 def forward(delay, steps):
   for i in range(0, steps):
@@ -47,13 +47,19 @@ def setStep(w1, w2, w3, w4):
   GPIO.output(coil_B_1_pin, w3)
   GPIO.output(coil_B_2_pin, w4)
 
-delay = sys.argv[1]
-steps = sys.argv[2]
-direction = sys.argv[3]
+steps = int(sys.argv[1]) if len(sys.argv) > 2 else 513
+pause = int(sys.argv[2]) if len(sys.argv) > 3 else 60
 
-if direction == 'f':
-   forward(int(delay) / 1000.0, int(steps))
-elif direction == 'b':
-   backwards(int(delay) / 1000.0, int(steps))
+while 1:
+    GPIO.output(enable_pin, 1)
+    #pause = 20
+    delay = 0.002
+    #steps = 470
 
-GPIO.output(enable_pin, 0)
+    print "going {} delay for {} steps, then waiting {}".format(
+            delay, steps, pause)
+
+    backwards(delay, steps)
+    GPIO.output(enable_pin, 0)
+
+    time.sleep(pause)

@@ -47,13 +47,14 @@ def setStep(w1, w2, w3, w4):
   GPIO.output(coil_B_1_pin, w3)
   GPIO.output(coil_B_2_pin, w4)
 
-delay = sys.argv[1]
-steps = sys.argv[2]
-direction = sys.argv[3]
+delay = 3
+steps = 1
 
-if direction == 'f':
-   forward(int(delay) / 1000.0, int(steps))
-elif direction == 'b':
-   backwards(int(delay) / 1000.0, int(steps))
+while 1:
+    direction = sys.stdin.read(1)
+    if direction == 'f':
+        forward(int(delay) / 1000.0, int(steps))
+    elif direction == 'b':
+        backwards(int(delay) / 1000.0, int(steps))
 
 GPIO.output(enable_pin, 0)
